@@ -16,12 +16,12 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .weather-app {
     position: relative;
     margin: 0 auto;
     width: 500px;
-    height: 900px;
+    height: 889px;
     text-align: center;
   }
   .bg {
@@ -30,8 +30,18 @@ export default {
     background-repeat: no-repeat;
     width: 100%;
     height: 100%;
-    .rain {
+
+    &.rain {
       background-image: url('~@/assets/images/weather-app/bg_rain.jpg');
+    }
+    &.cloudy {
+      background-image: url('~@/assets/images/weather-app/bg_cloudy.jpg');
+    }
+    &.sunny {
+      background-image: url('~@/assets/images/weather-app/bg_sunny.jpg');
+    }
+    &.thunder {
+      background-image: url('~@/assets/images/weather-app/bg_thunder.jpg');
     }
   }
 </style>
