@@ -1,24 +1,14 @@
-# vue3-elementalist
+## Project ideal
+The pet project for learning Vue3 (Use VueCLI & fetch native & composition API)<br>
+<img src="../../../../thumb_app.png" alt="weather app" width="100%" height="auto"><br/>
+
+Feature include:
+- Using `scss`, `font`, `fetch`, `VueCLI`, `VueRouter`, `openweatherAPI`
 
 ## Project setup
 ```
 npm install
-```
-
-### Compiles and hot-reloads for development
-```
 npm run serve
-```
-
-### Compiles and minifies for production
-```
 npm run build
-```
-
-### Lints and fixes files
-```
 npm run lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
