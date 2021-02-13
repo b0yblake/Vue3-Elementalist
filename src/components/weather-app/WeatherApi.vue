@@ -1,24 +1,22 @@
 <template>
-  <span class="bg thunder"></span>
+  <span class="bg" :class="!loading && data.weather[0].main === 'Clear' ? 'cloudy' : 'cloudy'"></span>
   <div class="main" v-if="!loading">
     <div class="top-header">
-      <strong class="day-week">MONDAY</strong>
-      <span class="location">LONDON</span>
+      <strong class="day-week">{{ curentDay }}</strong>
+      <span class="location">{{ `${data.name} - ${data.weather[0].description }` }}</span>
     </div>
     <div class="content">
       <div class="temperature-range">
-        <strong class="current">27&#176;</strong>
-        <span class="range">14&#176; ~ 30&#176;</span>
+        <strong class="current">{{ `${data.main.temp - 273.15}&#176;` }}</strong>
+        <span class="range">{{ `${data.main.temp_min - 273.15}&#176; ~ ${data.main.temp_max - 273.15}&#176;` }}</span>
       </div>
     </div>
     <div class="detail-elementalist">
       <dl>
-        <dt>Precipitation:</dt>
-        <dd>100%</dd>
-        <dt>Humidity:</dt>
-        <dd>70%</dd>
-        <dt>Wind:</dt>
-        <dd>8km/h</dd>
+        <dt>Độ ẩm:</dt>
+        <dd>{{ `${data.main.humidity}%` }}</dd>
+        <dt>Gió:</dt>
+        <dd>{{ `${data.wind.speed}km/h` }}</dd>
       </dl>
     </div>
   </div>
@@ -41,9 +39,11 @@ export default {
     const loading = ref(true);
     const error = ref(null);
 
-    const URL_API_BASE = 'api.openweathermap.org/data/2.5/weather';
-    const APIT_KEY = '72df89b983a305010253ebdb86ff4df8';
+    const curentDay = ref(null);
 
+    //API openweather: https://openweathermap.org/current
+    const URL_API_BASE = 'https://api.openweathermap.org/data/2.5/weather';
+    const APIT_KEY = '5deaa884e445893d84d87594f46d2198';
     const CITY_LOCATION = 'hanoi'
 
 
@@ -52,13 +52,7 @@ export default {
 
       loading.value = true;
 
-      return fetch(`${URL_API_BASE}?q=${CITY_LOCATION}&appid=${APIT_KEY}`, {
-        method: 'GET',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+      return fetch(`${URL_API_BASE}?q=${CITY_LOCATION}&appid=${APIT_KEY}`)
         .then(res => {
           // a non-200 response code
           if (!res.ok) {
@@ -68,16 +62,15 @@ export default {
             throw error;
           }
 
-          console.log(res.json());
+          // console.log(res.json());
 
           return res.json();
         })
         .then(json => {
           // set the response data
-          data.value = json.data;
+          data.value = json;
 
-          console.log('show data: ');
-          console.log(data);
+          console.log(data.value);
         })
         .catch(err => {
           error.value = err;
@@ -91,9 +84,13 @@ export default {
         })
         .then(() => {
           loading.value = false;
+          curentDay.value = dayName(new Date());
         });
 
     }
+
+    const dayName = (date, locale) =>
+      date.toLocaleDateString(locale, { weekday: 'long' });
 
     onMounted(() => {
       fetchData();
@@ -102,7 +99,8 @@ export default {
     return {
       data,
       loading,
-      error
+      error,
+      curentDay
     };
   }
 }
@@ -130,6 +128,7 @@ export default {
   .day-week {
     display: block;
     font-size: 35px;
+    line-height: 1.2;
   }
   .location {
     font-size: 24px;
