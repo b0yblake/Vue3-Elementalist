@@ -1,5 +1,5 @@
 <template>
-  <span class="bg" :class="!loading && data.weather[0].main === 'Clear' ? 'cloudy' : 'cloudy'"></span>
+  <span class="bg" :class="!loading && currentWeather"></span>
   <div class="main" v-if="!loading">
     <div class="top-header">
       <strong class="day-week">{{ curentDay }}</strong>
@@ -41,6 +41,8 @@ export default {
 
     const curentDay = ref(null);
 
+    const currentWeather = ref(null);
+
     //API openweather: https://openweathermap.org/current
     const URL_API_BASE = 'https://api.openweathermap.org/data/2.5/weather';
     const APIT_KEY = '5deaa884e445893d84d87594f46d2198';
@@ -48,6 +50,7 @@ export default {
 
 
     function fetchData() {
+      //https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
       console.log('run before fetch...');
 
       loading.value = true;
@@ -61,16 +64,12 @@ export default {
             error.json = res.json();
             throw error;
           }
-
           // console.log(res.json());
-
           return res.json();
         })
         .then(json => {
           // set the response data
           data.value = json;
-
-          console.log(data.value);
         })
         .catch(err => {
           error.value = err;
@@ -85,12 +84,33 @@ export default {
         .then(() => {
           loading.value = false;
           curentDay.value = dayName(new Date());
+          bgClass(data.value.weather[0].main);
         });
 
     }
 
     const dayName = (date, locale) =>
       date.toLocaleDateString(locale, { weekday: 'long' });
+
+    const bgClass = (currentWether) => {
+      switch (currentWether) {
+        case 'Thunderstorm':
+          currentWeather.value = 'thunder';
+          break;
+        case 'Rain':
+          currentWeather.value = 'rain';
+          break;
+        case 'Clear':
+          currentWeather.value = 'sunny';
+          break;
+        case 'Clouds':
+          currentWeather.value = 'cloudy';
+          break;
+        default:
+          currentWeather.value = 'cloudy';
+          break;
+      }
+    }
 
     onMounted(() => {
       fetchData();
@@ -100,7 +120,8 @@ export default {
       data,
       loading,
       error,
-      curentDay
+      curentDay,
+      currentWeather
     };
   }
 }
