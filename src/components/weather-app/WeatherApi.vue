@@ -40,14 +40,12 @@ export default {
     const error = ref(null);
 
     const curentDay = ref(null);
-
     const currentWeather = ref(null);
 
     //API openweather: https://openweathermap.org/current
     const URL_API_BASE = 'https://api.openweathermap.org/data/2.5/weather';
     const APIT_KEY = '5deaa884e445893d84d87594f46d2198';
-    const CITY_LOCATION = 'hanoi'
-
+    const CITY_LOCATION = 'hanoi';
 
     function fetchData() {
       //https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
@@ -56,16 +54,16 @@ export default {
       loading.value = true;
 
       return fetch(`${URL_API_BASE}?q=${CITY_LOCATION}&appid=${APIT_KEY}`)
-        .then(res => {
+        .then(response  => {
           // a non-200 response code
-          if (!res.ok) {
+          if (!response .ok) {
             // create error instance with HTTP status text
-            const error = new Error(res.statusText);
-            error.json = res.json();
+            const error = new Error(response .statusText);
+            error.json = response .json();
             throw error;
           }
-          // console.log(res.json());
-          return res.json();
+          // console.log(response .json());
+          return response .json();
         })
         .then(json => {
           // set the response data
@@ -188,7 +186,7 @@ export default {
 }
 .bg {
   display: block;
-  background-size: 100% auto;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
   width: 100%;
   height: 100%;

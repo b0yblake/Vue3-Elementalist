@@ -20,7 +20,8 @@ export default {
     position: relative;
     margin: 0 auto;
     width: 500px;
-    height: 889px;
+    height: 100vh;
+    min-height: 625px;
     text-align: center;
   }
 </style>
