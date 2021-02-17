@@ -2,7 +2,7 @@
   <span class="bg" :class="!loading && currentWeather"></span>
   <div class="main" v-if="!loading">
     <div class="top-header">
-      <strong class="day-week">{{ curentDay }}</strong>
+      <strong class="day-week">{{ currentDay }}</strong>
       <span class="location">{{ `${data.name} - ${data.weather[0].description }` }}</span>
     </div>
     <div class="content">
@@ -39,7 +39,7 @@ export default {
     const loading = ref(true);
     const error = ref(null);
 
-    const curentDay = ref(null);
+    const currentDay = ref(null);
     const currentWeather = ref(null);
 
     //API openweather: https://openweathermap.org/current
@@ -47,13 +47,36 @@ export default {
     const APIT_KEY = '5deaa884e445893d84d87594f46d2198';
     const CITY_LOCATION = 'hanoi';
 
+    function getData(url = '') {
+      
+      // Default options are marked with *
+      const response = fetch(url, {
+        method: 'GET', // *GET, POST, PUT, DELETE, ..
+        mode: 'cors', // *cors, no-cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // *same-origin, include, omit
+        headers: {
+          //'Content-Type': 'application/json' // application/json, application/x-www-form-urlencoded
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // *follow, manual, error
+        referrerPolicy: 'no-referrer', // *no-referrer-when-downgrade, no-referrer, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        // body: JSON.stringify(data) // body data type must match "Content-Type" header
+      });
+
+      // console.log(response);
+      return response;
+    }
+
+
+
     function fetchData() {
       //https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
       console.log('run before fetch...');
 
       loading.value = true;
 
-      return fetch(`${URL_API_BASE}?q=${CITY_LOCATION}&appid=${APIT_KEY}`)
+      return getData(`${URL_API_BASE}?q=${CITY_LOCATION}&appid=${APIT_KEY}`)
         .then(response  => {
           // a non-200 response code
           if (!response .ok) {
@@ -62,7 +85,8 @@ export default {
             error.json = response .json();
             throw error;
           }
-          // console.log(response .json());
+
+          // console.log(response.json());
           return response .json();
         })
         .then(json => {
@@ -81,10 +105,9 @@ export default {
         })
         .then(() => {
           loading.value = false;
-          curentDay.value = dayName(new Date());
+          currentDay.value = dayName(new Date());
           bgClass(data.value.weather[0].main);
         });
-
     }
 
     const dayName = (date, locale) =>
@@ -118,7 +141,7 @@ export default {
       data,
       loading,
       error,
-      curentDay,
+      currentDay,
       currentWeather
     };
   }
