@@ -47,10 +47,10 @@ export default {
     const APIT_KEY = '5deaa884e445893d84d87594f46d2198';
     const CITY_LOCATION = 'hanoi';
 
-    function getData(url = '') {
+    async function getData(url = '') {
       
       // Default options are marked with *
-      const response = fetch(url, {
+      const response = await fetch(url, {
         method: 'GET', // *GET, POST, PUT, DELETE, ..
         mode: 'cors', // *cors, no-cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -64,13 +64,10 @@ export default {
         // body: JSON.stringify(data) // body data type must match "Content-Type" header
       });
 
-      // console.log(response);
       return response;
     }
 
-
-
-    function fetchData() {
+    const fetchData = function() {
       //https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
       console.log('run before fetch...');
 
@@ -87,11 +84,12 @@ export default {
           }
 
           // console.log(response.json());
-          return response .json();
+          return response.json();
         })
         .then(json => {
           // set the response data
           data.value = json;
+          // console.log(data.value);
         })
         .catch(err => {
           error.value = err;
@@ -106,31 +104,23 @@ export default {
         .then(() => {
           loading.value = false;
           currentDay.value = dayName(new Date());
-          bgClass(data.value.weather[0].main);
+          weatherClassName(data.value.weather[0].main);
         });
     }
 
-    const dayName = (date, locale) =>
-      date.toLocaleDateString(locale, { weekday: 'long' });
+    const dayName = (date, locale) => date.toLocaleDateString(locale, { weekday: 'long' });
 
-    const bgClass = (currentWether) => {
-      switch (currentWether) {
-        case 'Thunderstorm':
-          currentWeather.value = 'thunder';
-          break;
-        case 'Rain':
-          currentWeather.value = 'rain';
-          break;
-        case 'Clear':
-          currentWeather.value = 'sunny';
-          break;
-        case 'Clouds':
-          currentWeather.value = 'cloudy';
-          break;
-        default:
-          currentWeather.value = 'cloudy';
-          break;
+    const weatherClassName = (weatherSumary) => {
+      let allTypesWeather = {
+        Thunderstorm: 'thunder',
+        Rain: 'rain',
+        Clear: 'sunny',
+        Clouds: 'cloudy'
       }
+      if((Object.keys(allTypesWeather).includes(weatherSumary))) {
+        return currentWeather.value = allTypesWeather[weatherSumary];
+      }
+      currentWeather.value = 'cloudy';
     }
 
     onMounted(() => {
